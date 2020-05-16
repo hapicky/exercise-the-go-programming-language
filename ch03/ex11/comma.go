@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"strings"
 )
 
 func comma(s string) string {
@@ -20,7 +21,15 @@ func comma(s string) string {
 		bd = s
 	}
 
-	return sign + commaNumber(bd)
+	var dot string
+	var ad string
+	if di := strings.Index(bd, "."); di >= 0 {
+		dot = "."
+		ad = bd[di+1:]
+		bd = bd[:di]
+	}
+
+	return sign + commaNumber(bd) + dot + ad
 }
 
 func commaNumber(s string) string {
@@ -60,6 +69,10 @@ func main() {
 		"-12345",
 		"-123456",
 		"+123456",
+		".123",
+		"-0.123",
+		"-123456.123",
+		"123456.1234",
 	}
 
 	for i := 0; i < len(values); i++ {
