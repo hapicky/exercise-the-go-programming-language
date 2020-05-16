@@ -7,6 +7,24 @@ import (
 
 func comma(s string) string {
 	l := len(s)
+	if l == 0 {
+		return s
+	}
+
+	var sign string
+	var bd string
+	if s[:1] == "-" || s[:1] == "+" {
+		sign = s[:1]
+		bd = s[1:]
+	} else {
+		bd = s
+	}
+
+	return sign + commaNumber(bd)
+}
+
+func commaNumber(s string) string {
+	l := len(s)
 	if l <= 3 {
 		return s
 	}
@@ -28,11 +46,23 @@ func comma(s string) string {
 }
 
 func main() {
-	fmt.Println(comma(""))
-	fmt.Println(comma("12"))
-	fmt.Println(comma("123"))
-	fmt.Println(comma("1234"))
-	fmt.Println(comma("12345"))
-	fmt.Println(comma("123456"))
-	fmt.Println(comma("1234567"))
+	values := []string{
+		"",
+		"12",
+		"123",
+		"1234",
+		"12345",
+		"123456",
+		"1234567",
+		"-12",
+		"-123",
+		"-1234",
+		"-12345",
+		"-123456",
+		"+123456",
+	}
+
+	for i := 0; i < len(values); i++ {
+		fmt.Printf("%q -> %q\n", values[i], comma(values[i]))
+	}
 }
