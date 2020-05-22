@@ -9,12 +9,15 @@ func isAnagram(a, b string) bool {
 	normalA := strings.ToLower(strings.ReplaceAll(a, " ", ""))
 	normalB := strings.ToLower(strings.ReplaceAll(b, " ", ""))
 
-	if len(normalA) != len(normalB) {
+	runesA := []rune(normalA)
+	runesB := []rune(normalB)
+
+	if len(runesA) != len(runesB) {
 		return false
 	}
 
-	for i := 0; i < len(normalA); i++ {
-		if char := normalA[i:i+1]; strings.Count(normalA, char) != strings.Count(normalB, char) {
+	for _, r := range runesA {
+		if char := string(r); strings.Count(normalA, char) != strings.Count(normalB, char) {
 			return false
 		}
 	}
