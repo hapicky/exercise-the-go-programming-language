@@ -1,0 +1,2 @@
+go build cattext.go
+curl -s https://golang.org | ./cattext
