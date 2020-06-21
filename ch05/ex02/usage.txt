@@ -1,0 +1,2 @@
+go build countelements.go
+curl -s https://golang.org | ./countelements
