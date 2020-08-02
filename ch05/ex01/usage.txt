@@ -1,0 +1,2 @@
+go build findlinks.go
+curl -s https://golang.org | ./findlinks
