@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"net/http"
 	"os"
+	"strings"
 
 	"golang.org/x/net/html"
 )
@@ -24,6 +26,21 @@ func CountWordsAndImages(url string) (words, images int, err error) {
 }
 
 func countWordsAndImages(doc *html.Node) (words, images int) {
+	if doc.Type == html.ElementNode && doc.Data == "img" {
+		images += 1
+	}
+	if doc.Type == html.TextNode {
+		input := bufio.NewScanner(strings.NewReader(doc.Data))
+		input.Split(bufio.ScanWords)
+		for input.Scan() {
+			words += 1
+		}
+	}
+	for c := doc.FirstChild; c != nil; c = c.NextSibling {
+		cwords, cimages := countWordsAndImages(c)
+		words += cwords
+		images += cimages
+	}
 	return
 }
 
@@ -34,5 +51,5 @@ func main() {
 		fmt.Fprintf(os.Stderr, "%v\n", err)
 		os.Exit(1)
 	}
-	fmt.Println(words, images)
+	fmt.Printf("%d words and %d images\n", words, images)
 }

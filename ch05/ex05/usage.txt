@@ -1,0 +1,2 @@
+go build cwai.go
+./cwai https://golang.org
