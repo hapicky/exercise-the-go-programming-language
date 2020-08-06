@@ -27,7 +27,6 @@ func crawl(base_url string) []string {
 	}
 	domain := u.Hostname()
 
-	savepage(base_url, domain)
 	for _, link := range list {
 		fmt.Println(link)
 		savepage(link, domain)
