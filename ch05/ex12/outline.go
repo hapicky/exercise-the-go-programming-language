@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	"golang.org/x/net/html"
 	"net/http"
 	"os"
+
+	"golang.org/x/net/html"
 )
 
 func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
@@ -18,22 +19,6 @@ func forEachNode(n *html.Node, pre, post func(n *html.Node)) {
 
 	if post != nil {
 		post(n)
-	}
-}
-
-var depth int
-
-func startElement(n *html.Node) {
-	if n.Type == html.ElementNode {
-		fmt.Printf("%*s<%s>\n", depth*2, "", n.Data)
-		depth++
-	}
-}
-
-func endElement(n *html.Node) {
-	if n.Type == html.ElementNode {
-		depth--
-		fmt.Printf("%*s</%s>\n", depth*2, "", n.Data)
 	}
 }
 
@@ -59,5 +44,21 @@ func main() {
 		os.Exit(1)
 	}
 
-	forEachNode(doc, startElement, endElement)
+	var depth int
+	var pre, post func(n *html.Node)
+
+	pre = func(n *html.Node) {
+		if n.Type == html.ElementNode {
+			fmt.Printf("%*s<%s>\n", depth*2, "", n.Data)
+			depth++
+		}
+	}
+	post = func(n *html.Node) {
+		if n.Type == html.ElementNode {
+			depth--
+			fmt.Printf("%*s</%s>\n", depth*2, "", n.Data)
+		}
+	}
+
+	forEachNode(doc, pre, post)
 }
