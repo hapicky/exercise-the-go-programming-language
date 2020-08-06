@@ -66,7 +66,7 @@ func savepage(link, target_domain string) {
 
 	base_dir := "./pages/" + target_domain
 	dir := filepath.Dir(base_dir + u.Path)
-	os.Mkdir(dir, 0755)
+	os.MkdirAll(dir, 0755)
 
 	out_path := base_dir + u.Path
 	if strings.HasSuffix(out_path, "/") {
