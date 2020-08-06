@@ -1,0 +1,3 @@
+go build crawl.go
+./crawl https://golang.org
+open pages
