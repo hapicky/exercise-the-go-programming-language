@@ -1,0 +1,2 @@
+go build ebtn.go
+./ebtn https://golang.org
