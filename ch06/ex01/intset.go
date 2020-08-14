@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"fmt"
+	"math/bits"
 )
 
 type IntSet struct {
@@ -52,6 +53,14 @@ func (s *IntSet) String() string {
 	return buf.String()
 }
 
+func (s *IntSet) Len() int {
+	l := 0
+	for _, word := range s.words {
+		l += bits.OnesCount64(word)
+	}
+	return l
+}
+
 func main() {
 	var x, y IntSet
 	x.Add(1)
@@ -67,4 +76,6 @@ func main() {
 	fmt.Println(x.String())
 
 	fmt.Println(x.Has(9), x.Has(123))
+
+	fmt.Println(x.Len())
 }
