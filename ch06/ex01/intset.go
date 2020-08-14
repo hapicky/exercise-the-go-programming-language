@@ -73,6 +73,12 @@ func (s *IntSet) Clear() {
 	s.words = nil
 }
 
+func (s *IntSet) Copy() *IntSet {
+	var c IntSet
+	c.UnionWith(s)
+	return &c
+}
+
 func main() {
 	var x, y IntSet
 	x.Add(1)
@@ -97,4 +103,7 @@ func main() {
 
 	x.Clear()
 	fmt.Println(x.String())
+
+	z := y.Copy()
+	fmt.Println(z.String())
 }
