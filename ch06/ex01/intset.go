@@ -61,6 +61,14 @@ func (s *IntSet) Len() int {
 	return l
 }
 
+func (s *IntSet) Remove(x int) {
+	word, bit := x/64, uint(x%64)
+	if word >= len(s.words) {
+		return
+	}
+	s.words[word] &= ^(1 << bit)
+}
+
 func main() {
 	var x, y IntSet
 	x.Add(1)
@@ -78,4 +86,8 @@ func main() {
 	fmt.Println(x.Has(9), x.Has(123))
 
 	fmt.Println(x.Len())
+
+	x.Remove(192)
+	x.Remove(9)
+	fmt.Println(x.String())
 }
