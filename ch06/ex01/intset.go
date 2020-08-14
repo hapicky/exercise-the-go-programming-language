@@ -69,6 +69,10 @@ func (s *IntSet) Remove(x int) {
 	s.words[word] &= ^(1 << bit)
 }
 
+func (s *IntSet) Clear() {
+	s.words = nil
+}
+
 func main() {
 	var x, y IntSet
 	x.Add(1)
@@ -89,5 +93,8 @@ func main() {
 
 	x.Remove(192)
 	x.Remove(9)
+	fmt.Println(x.String())
+
+	x.Clear()
 	fmt.Println(x.String())
 }
