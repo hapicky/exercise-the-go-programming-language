@@ -54,6 +54,18 @@ func (s *IntSet) IntersectWith(t *IntSet) *IntSet {
 	return &i
 }
 
+func (s *IntSet) DifferenceWith(t *IntSet) *IntSet {
+	var d IntSet
+	for i := 0; i < len(s.words); i++ {
+		var t_word uint64
+		if len(t.words) > i {
+			t_word = t.words[i]
+		}
+		d.words = append(d.words, (s.words[i] & ^(t_word)))
+	}
+	return &d
+}
+
 func (s *IntSet) String() string {
 	var buf bytes.Buffer
 	buf.WriteByte('{')
@@ -135,4 +147,9 @@ func main() {
 	i1.AddAll(1, 2, 3)
 	i2.AddAll(2, 3, 4)
 	fmt.Println(i1.IntersectWith(&i2))
+
+	var d1, d2 IntSet
+	d1.AddAll(1, 2, 3, 64)
+	d2.AddAll(2, 3)
+	fmt.Println(d1.DifferenceWith(&d2))
 }
