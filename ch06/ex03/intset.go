@@ -66,6 +66,28 @@ func (s *IntSet) DifferenceWith(t *IntSet) *IntSet {
 	return &d
 }
 
+func (s *IntSet) SymmetricDifference(t *IntSet) *IntSet {
+	var max_len int
+	if len(s.words) > len(t.words) {
+		max_len = len(s.words)
+	} else {
+		max_len = len(t.words)
+	}
+
+	var ret IntSet
+	for i := 0; i < max_len; i++ {
+		var s_word, t_word uint64
+		if len(s.words) > i {
+			s_word = s.words[i]
+		}
+		if len(t.words) > i {
+			t_word = t.words[i]
+		}
+		ret.words = append(ret.words, s_word^t_word)
+	}
+	return &ret
+}
+
 func (s *IntSet) String() string {
 	var buf bytes.Buffer
 	buf.WriteByte('{')
@@ -152,4 +174,9 @@ func main() {
 	d1.AddAll(1, 2, 3, 64)
 	d2.AddAll(2, 3)
 	fmt.Println(d1.DifferenceWith(&d2))
+
+	var s1, s2 IntSet
+	s1.AddAll(1, 2, 3, 64)
+	s2.AddAll(2, 3, 150)
+	fmt.Println(s1.SymmetricDifference(&s2))
 }
