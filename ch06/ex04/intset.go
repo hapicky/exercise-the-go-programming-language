@@ -134,6 +134,18 @@ func (s *IntSet) Copy() *IntSet {
 	return &c
 }
 
+func (s *IntSet) Elems() []int {
+	var ret []int
+	for i, word := range s.words {
+		for n := 0; n < 64; n++ {
+			if (word & (1 << n)) > 0 {
+				ret = append(ret, i*64+n)
+			}
+		}
+	}
+	return ret
+}
+
 func main() {
 	var x, y IntSet
 	x.Add(1)
@@ -179,4 +191,9 @@ func main() {
 	s1.AddAll(1, 2, 3, 64)
 	s2.AddAll(2, 3, 150)
 	fmt.Println(s1.SymmetricDifference(&s2))
+
+	var e IntSet
+	fmt.Println(e.Elems())
+	e.AddAll(0, 2, 4, 64)
+	fmt.Println(e.Elems())
 }
