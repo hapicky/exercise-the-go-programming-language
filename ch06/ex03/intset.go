@@ -47,23 +47,23 @@ func (s *IntSet) IntersectWith(t *IntSet) *IntSet {
 		min_len = len(t.words)
 	}
 
-	var i IntSet
-	for n := 0; n < min_len; n++ {
-		i.words = append(i.words, s.words[n]&t.words[n])
+	var ret IntSet
+	for i := 0; i < min_len; i++ {
+		ret.words = append(ret.words, s.words[i]&t.words[i])
 	}
-	return &i
+	return &ret
 }
 
 func (s *IntSet) DifferenceWith(t *IntSet) *IntSet {
-	var d IntSet
+	var ret IntSet
 	for i := 0; i < len(s.words); i++ {
 		var t_word uint64
 		if len(t.words) > i {
 			t_word = t.words[i]
 		}
-		d.words = append(d.words, (s.words[i] & ^(t_word)))
+		ret.words = append(ret.words, (s.words[i] & ^(t_word)))
 	}
-	return &d
+	return &ret
 }
 
 func (s *IntSet) SymmetricDifference(t *IntSet) *IntSet {
