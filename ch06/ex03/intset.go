@@ -39,6 +39,21 @@ func (s *IntSet) UnionWith(t *IntSet) {
 	}
 }
 
+func (s *IntSet) IntersectWith(t *IntSet) *IntSet {
+	var min_len int
+	if len(s.words) < len(t.words) {
+		min_len = len(s.words)
+	} else {
+		min_len = len(t.words)
+	}
+
+	var i IntSet
+	for n := 0; n < min_len; n++ {
+		i.words = append(i.words, s.words[n]&t.words[n])
+	}
+	return &i
+}
+
 func (s *IntSet) String() string {
 	var buf bytes.Buffer
 	buf.WriteByte('{')
@@ -115,4 +130,9 @@ func main() {
 
 	z.AddAll(1, 2, 3)
 	fmt.Println(z.String())
+
+	var i1, i2 IntSet
+	i1.AddAll(1, 2, 3)
+	i2.AddAll(2, 3, 4)
+	fmt.Println(i1.IntersectWith(&i2))
 }
