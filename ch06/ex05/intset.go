@@ -7,16 +7,18 @@ import (
 )
 
 type IntSet struct {
-	words []uint64
+	words []uint
 }
 
+const pBit = 32 << (^uint(0) >> 63)
+
 func (s *IntSet) Has(x int) bool {
-	word, bit := x/64, uint(x%64)
+	word, bit := x/pBit, uint(x%pBit)
 	return word < len(s.words) && s.words[word]&(1<<bit) != 0
 }
 
 func (s *IntSet) Add(x int) {
-	word, bit := x/64, uint(x%64)
+	word, bit := x/pBit, uint(x%pBit)
 	for word >= len(s.words) {
 		s.words = append(s.words, 0)
 	}
@@ -57,7 +59,7 @@ func (s *IntSet) IntersectWith(t *IntSet) *IntSet {
 func (s *IntSet) DifferenceWith(t *IntSet) *IntSet {
 	var ret IntSet
 	for i := 0; i < len(s.words); i++ {
-		var t_word uint64
+		var t_word uint
 		if len(t.words) > i {
 			t_word = t.words[i]
 		}
@@ -76,7 +78,7 @@ func (s *IntSet) SymmetricDifference(t *IntSet) *IntSet {
 
 	var ret IntSet
 	for i := 0; i < max_len; i++ {
-		var s_word, t_word uint64
+		var s_word, t_word uint
 		if len(s.words) > i {
 			s_word = s.words[i]
 		}
@@ -95,12 +97,12 @@ func (s *IntSet) String() string {
 		if word == 0 {
 			continue
 		}
-		for j := 0; j < 64; j++ {
+		for j := 0; j < pBit; j++ {
 			if word&(1<<uint(j)) != 0 {
 				if buf.Len() > len("{") {
 					buf.WriteByte(' ')
 				}
-				fmt.Fprintf(&buf, "%d", 64*i+j)
+				fmt.Fprintf(&buf, "%d", pBit*i+j)
 			}
 		}
 	}
@@ -111,13 +113,13 @@ func (s *IntSet) String() string {
 func (s *IntSet) Len() int {
 	l := 0
 	for _, word := range s.words {
-		l += bits.OnesCount64(word)
+		l += bits.OnesCount(word)
 	}
 	return l
 }
 
 func (s *IntSet) Remove(x int) {
-	word, bit := x/64, uint(x%64)
+	word, bit := x/pBit, uint(x%pBit)
 	if word >= len(s.words) {
 		return
 	}
@@ -137,9 +139,9 @@ func (s *IntSet) Copy() *IntSet {
 func (s *IntSet) Elems() []int {
 	var ret []int
 	for i, word := range s.words {
-		for n := 0; n < 64; n++ {
+		for n := 0; n < pBit; n++ {
 			if (word & (1 << n)) > 0 {
-				ret = append(ret, i*64+n)
+				ret = append(ret, i*pBit+n)
 			}
 		}
 	}
