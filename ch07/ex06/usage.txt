@@ -1,0 +1,2 @@
+go build tempflag.go
+./tempflag -temp 273.15K

@@ -7,6 +7,13 @@ import (
 	"gopl.io/ch2/tempconv"
 )
 
+// Kelvin support
+type Kelvin float64
+
+func KToC(k Kelvin) tempconv.Celsius { return tempconv.Celsius(k - 273.15) }
+
+// ch7/tempconv
+
 type celsiusFlag struct {
 	tempconv.Celsius
 }
@@ -22,6 +29,9 @@ func (f *celsiusFlag) Set(s string) error {
 	case "F", "℉":
 		f.Celsius = tempconv.FToC(tempconv.Fahrenheit(value))
 		return nil
+	case "K":
+		f.Celsius = KToC(Kelvin(value))
+		return nil
 	}
 	return fmt.Errorf("invalid temperature %q", s)
 }
@@ -31,6 +41,8 @@ func CelsiusFlag(name string, value tempconv.Celsius, usage string) *tempconv.Ce
 	flag.CommandLine.Var(&f, name, usage)
 	return &f.Celsius
 }
+
+// ch7/tempflag
 
 var temp = CelsiusFlag("temp", 20.0, "the temperature")
 
