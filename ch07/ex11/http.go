@@ -4,12 +4,14 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func main() {
 	db := database{"shoes": 50, "socks": 5}
 	http.HandleFunc("/list", db.list)
 	http.HandleFunc("/price", db.price)
+	http.HandleFunc("/create", db.create)
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
 
@@ -34,4 +36,39 @@ func (db database) price(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, "%s\n", price)
+}
+
+func (db database) create(w http.ResponseWriter, req *http.Request) {
+	item := req.URL.Query().Get("item")
+	if item == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "parameter %q is required\n", "item")
+		return
+	}
+
+	// すでにあったら400
+	_, ok := db[item]
+	if ok {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "item %q already exists\n", item)
+		return
+	}
+
+	// priceが不正だったら400
+	price := req.URL.Query().Get("price")
+	if price == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "parameter %q is required\n", "price")
+		return
+	}
+	pricef, err := strconv.ParseFloat(price, 32)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "invalid price %q\n", price)
+		return
+	}
+
+	// okだったら作成
+	db[item] = dollars(pricef)
+	fmt.Fprintf(w, "item %q created\n", item)
 }
