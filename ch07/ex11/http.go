@@ -12,6 +12,7 @@ func main() {
 	http.HandleFunc("/list", db.list)
 	http.HandleFunc("/price", db.price)
 	http.HandleFunc("/create", db.create)
+	http.HandleFunc("/update", db.update)
 	log.Fatal(http.ListenAndServe("localhost:8000", nil))
 }
 
@@ -71,4 +72,38 @@ func (db database) create(w http.ResponseWriter, req *http.Request) {
 	// okだったら作成
 	db[item] = dollars(pricef)
 	fmt.Fprintf(w, "item %q created\n", item)
+}
+
+func (db database) update(w http.ResponseWriter, req *http.Request) {
+	item := req.URL.Query().Get("item")
+	if item == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "parameter %q is required\n", "item")
+		return
+	}
+
+	_, ok := db[item]
+	if !ok {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "no such item: %q\n", item)
+		return
+	}
+
+	// priceが不正だったら400
+	price := req.URL.Query().Get("price")
+	if price == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "parameter %q is required\n", "price")
+		return
+	}
+	pricef, err := strconv.ParseFloat(price, 32)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "invalid price %q\n", price)
+		return
+	}
+
+	// okだったら更新
+	db[item] = dollars(pricef)
+	fmt.Fprintf(w, "item %q updated\n", item)
 }
