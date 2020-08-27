@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"strconv"
@@ -23,10 +24,28 @@ func (d dollars) String() string { return fmt.Sprintf("$%.2f", d) }
 
 type database map[string]dollars
 
+var itemList = template.Must(template.New("itemlist").Parse(`
+<html>
+<body>
+<h1>List</h1>
+<table>
+	<tr>
+		<th>Item</th>
+		<th>Price</th>
+	</tr>
+	{{ range $item, $price := . }}
+	<tr>
+		<td>{{ $item }}</td>
+		<td>{{ $price }}</td>
+	</tr>
+	{{ end }}
+</table>
+</body>
+</html>
+`))
+
 func (db database) list(w http.ResponseWriter, req *http.Request) {
-	for item, price := range db {
-		fmt.Fprintf(w, "%s: %s\n", item, price)
-	}
+	itemList.Execute(w, db)
 }
 
 func (db database) price(w http.ResponseWriter, req *http.Request) {
