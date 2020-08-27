@@ -1,0 +1,7 @@
+go run http.go
+
+open http://localhost:8000/create?item=iphone&price=999
+open http://localhost:8000/price?item=iphone
+open http://localhost:8000/update?item=iphone&price=899
+open http://localhost:8000/delete?item=iphone
+open http://localhost:8000/list
