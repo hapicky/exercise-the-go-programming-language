@@ -16,7 +16,6 @@ type encoderFlag struct {
 }
 
 func (f *encoderFlag) String() string {
-	// 怒られたから実装したけど、これ何だろう？
 	return "[encoder]"
 }
 
@@ -32,18 +31,17 @@ func (f *encoderFlag) Set(s string) error {
 	return fmt.Errorf("invalid encoder %q", s)
 }
 
-func EncoderFlag(name string, value func(in io.Reader, out io.Writer) error, usage string) func(in io.Reader, out io.Writer) error {
+func EncoderFlag(name string, value func(in io.Reader, out io.Writer) error, usage string) *func(in io.Reader, out io.Writer) error {
 	f := encoderFlag{value}
 	flag.CommandLine.Var(&f, name, usage)
-	return f.encoder
+	return &f.encoder
 }
 
-// TODO これだと引数指定しても参照が置き換わらない？
 var encode = EncoderFlag("encoder", toJPEG, "the encoder('jpeg' OR 'png' OR 'gif'. default: jpeg)")
 
 func main() {
 	flag.Parse()
-	if err := encode(os.Stdin, os.Stdout); err != nil {
+	if err := (*encode)(os.Stdin, os.Stdout); err != nil {
 		fmt.Fprintf(os.Stderr, "jpeg: %v\n", err)
 		os.Exit(1)
 	}
