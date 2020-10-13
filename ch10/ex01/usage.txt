@@ -1,0 +1,14 @@
+# how to build
+go build -o jpeg .
+
+# input: png
+cat input/mandelbrot.png | ./jpeg > mandelbrot.jpg
+cat input/mandelbrot.png | ./jpeg -encoder gif > mandelbrot.gif
+
+# input: gif
+cat input/mandelbrot.gif | ./jpeg > mandelbrot.jpg
+cat input/mandelbrot.gif | ./jpeg -encoder png > mandelbrot.png
+
+# input: jpeg
+cat input/mandelbrot.jpg | ./jpeg -encoder gif > mandelbrot.gif
+cat input/mandelbrot.jpg | ./jpeg -encoder png > mandelbrot.png
