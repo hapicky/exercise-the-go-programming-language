@@ -6,7 +6,7 @@ import (
 	"image"
 	"image/gif"
 	"image/jpeg"
-	_ "image/png"
+	"image/png"
 	"io"
 	"os"
 )
@@ -26,6 +26,9 @@ func (f *encoderFlag) Set(s string) error {
 		return nil
 	case "gif":
 		f.encoder = toGIF
+		return nil
+	case "png":
+		f.encoder = toPNG
 		return nil
 	}
 	return fmt.Errorf("invalid encoder %q", s)
@@ -63,4 +66,13 @@ func toGIF(in io.Reader, out io.Writer) error {
 	}
 	fmt.Fprintln(os.Stderr, "Input format =", kind)
 	return gif.Encode(out, img, &gif.Options{})
+}
+
+func toPNG(in io.Reader, out io.Writer) error {
+	img, kind, err := image.Decode(in)
+	if err != nil {
+		return err
+	}
+	fmt.Fprintln(os.Stderr, "Input format =", kind)
+	return png.Encode(out, img)
 }
