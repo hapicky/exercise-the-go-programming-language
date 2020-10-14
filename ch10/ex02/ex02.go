@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"./areader"
+	_ "./areader/tar"
 	_ "./areader/zip"
 )
 

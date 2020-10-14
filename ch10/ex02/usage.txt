@@ -1,0 +1,3 @@
+go build .
+./ex02 input/sample.zip
+./ex02 input/sample.tar

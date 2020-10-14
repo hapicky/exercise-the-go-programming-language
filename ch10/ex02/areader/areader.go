@@ -27,7 +27,7 @@ func RegisterFormat(name string, filenames func(path string) []string) {
 	formatsMu.Unlock()
 }
 
-// アーカイブのパスから形式を特定します
+// アーカイブのパス(拡張子)から形式を特定します
 func detect(path string) format {
 	formats, _ := atomicFormats.Load().([]format)
 	ext := filepath.Ext(path)
