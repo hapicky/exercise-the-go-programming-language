@@ -16,7 +16,7 @@ func randomPalindrome(rng *rand.Rand) string {
 		runes[i] = r
 		runes[n-1-i] = r
 	}
-	return string(runes)
+	return string(runes) + ",.:;' "
 }
 
 func TestRandomPalindromes(t *testing.T) {
