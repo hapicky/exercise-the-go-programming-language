@@ -24,14 +24,32 @@ func main() {
 	k := [2]int{100, 50}
 	am[k] = true
 	Display("am", am)
+
+	type node struct {
+		link *node
+	}
+
+	node1 := node{}
+	node2 := node{link: &node1}
+	node1.link = &node2
+	Display("node1", node1)
 }
+
+var counter int
+const step_limit = 100
 
 func Display(name string, x interface{}) {
 	fmt.Printf("Display %s (%T):\n", name, x)
+	counter = 0
 	display(name, reflect.ValueOf(x))
 }
 
 func display(path string, v reflect.Value) {
+	counter++
+	if counter > step_limit {
+		panic("Display: exceed step limit.")
+	}
+
 	switch v.Kind() {
 	case reflect.Invalid:
 		fmt.Printf("%s = invalid\n", path)
