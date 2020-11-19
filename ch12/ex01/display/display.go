@@ -11,6 +11,14 @@ import (
 func main() {
 	e, _ := eval.Parse("sqrt(A / pi)")
 	Display("e", e)
+
+	type point struct {
+		x int
+		y int
+	}
+	pm := make(map[point]bool)
+	pm[point{x: 100, y: 50}] = true
+	Display("pm", pm)
 }
 
 func Display(name string, x interface{}) {
@@ -67,6 +75,15 @@ func formatAtom(v reflect.Value) string {
 		return strconv.Quote(v.String())
 	case reflect.Chan, reflect.Func, reflect.Ptr, reflect.Slice, reflect.Map:
 		return v.Type().String() + " 0x" + strconv.FormatUint(uint64(v.Pointer()), 16)
+	case reflect.Struct:
+		s := v.Type().Name() + "{"
+		for i := 0; i < v.NumField(); i++ {
+			if i > 0 {
+				s += ", "
+			}
+			s += fmt.Sprintf("%s:%s", v.Type().Field(i).Name, formatAtom(v.Field(i)))
+		}
+		return s + "}"
 	default:
 		return v.Type().String() + " value"
 	}
