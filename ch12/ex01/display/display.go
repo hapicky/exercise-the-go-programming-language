@@ -19,6 +19,11 @@ func main() {
 	pm := make(map[point]bool)
 	pm[point{x: 100, y: 50}] = true
 	Display("pm", pm)
+
+	am := make(map[[2]int]bool)
+	k := [2]int{100, 50}
+	am[k] = true
+	Display("am", am)
 }
 
 func Display(name string, x interface{}) {
@@ -84,6 +89,15 @@ func formatAtom(v reflect.Value) string {
 			s += fmt.Sprintf("%s:%s", v.Type().Field(i).Name, formatAtom(v.Field(i)))
 		}
 		return s + "}"
+	case reflect.Array:
+		s := "["
+		for i := 0; i < v.Len(); i++ {
+			if i > 0 {
+				s += ", "
+			}
+			s += formatAtom(v.Index(i))
+		}
+		return s + "]"
 	default:
 		return v.Type().String() + " value"
 	}
